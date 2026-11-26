@@ -5,7 +5,7 @@ from plspm.scheme import Scheme
 import streamlit as st
 
 st.set_page_config(
-    page_title="PLS-SEM Web Calculator",
+    page_title="PLS-SEM Web Calculator | made by @ciceroyce",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
@@ -13,144 +13,125 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-        /* Palette: Red (#D92B2B), Yellow (#F5B700), Green (#15803D), White (#FFFFFF) */
+        :root {
+            --bg-white: #FFFFFF;
+            --surface-white: #FFFDF9;
+            --red-main: #D92B2B;
+            --red-dark: #B51D1D;
+            --yellow-main: #F6C90E;
+            --yellow-soft: #FFF8D6;
+            --green-main: #15803D;
+            --green-soft: #ECFDF3;
+            --ink-dark: #18181B;
+            --border-light: #E4E4E7;
+        }
+
         .stApp {
-            background-color: #FFFFFF;
-            color: #1A1A1A;
+            background-color: var(--bg-white);
+            color: var(--ink-dark);
         }
 
-        .brand-banner {
-            background: linear-gradient(135deg, #FFFFFF 0%, #FFFBEB 65%, #F0FDF4 100%);
-            border: 2px solid #15803D;
-            border-left: 8px solid #D92B2B;
+        .hero-box {
+            background: var(--surface-white);
+            border: 2px solid var(--green-main);
+            border-left: 8px solid var(--red-main);
             border-radius: 14px;
-            padding: 18px 20px;
-            margin-bottom: 18px;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+            padding: 1.1rem 1.25rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 14px rgba(24, 24, 27, 0.05);
         }
 
-        .brand-pills {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 10px;
-        }
-
-        .pill-red {
-            background-color: #D92B2B;
-            color: #FFFFFF;
-            font-size: 12px;
+        .creator-pill {
+            display: inline-block;
+            background-color: var(--yellow-main);
+            color: var(--ink-dark);
             font-weight: 700;
-            padding: 4px 10px;
+            font-size: 0.85rem;
+            padding: 0.25rem 0.7rem;
             border-radius: 999px;
+            border: 1.5px solid var(--green-main);
+            margin-bottom: 0.5rem;
         }
 
-        .pill-yellow {
-            background-color: #F5B700;
-            color: #1A1A1A;
-            font-size: 12px;
-            font-weight: 700;
-            padding: 4px 10px;
-            border-radius: 999px;
-        }
-
-        .pill-green {
-            background-color: #15803D;
-            color: #FFFFFF;
-            font-size: 12px;
-            font-weight: 700;
-            padding: 4px 10px;
-            border-radius: 999px;
-        }
-
-        .brand-title {
-            margin: 0 0 6px 0;
-            color: #15803D;
+        .hero-title {
+            color: var(--green-main);
             font-size: clamp(1.45rem, 4vw, 2.2rem);
             font-weight: 800;
             line-height: 1.2;
+            margin: 0.2rem 0 0.4rem 0;
         }
 
-        .brand-sub {
+        .hero-sub {
+            color: var(--ink-dark);
+            font-size: clamp(0.92rem, 2.3vw, 1.05rem);
             margin: 0;
-            color: #2B2B2B;
-            font-size: clamp(0.92rem, 2.5vw, 1.05rem);
-            line-height: 1.45;
         }
 
         .section-tag {
             display: inline-block;
-            background-color: #FEF9C3;
-            color: #1A1A1A;
-            border: 1.5px solid #F5B700;
-            border-left: 5px solid #15803D;
-            padding: 6px 12px;
-            border-radius: 8px;
+            background-color: var(--green-soft);
+            color: var(--green-main);
+            border-left: 5px solid var(--green-main);
             font-weight: 700;
-            font-size: 1rem;
-            margin-top: 14px;
-            margin-bottom: 8px;
+            padding: 0.35rem 0.75rem;
+            border-radius: 6px;
+            margin-top: 0.8rem;
+            margin-bottom: 0.4rem;
+            font-size: 1.05rem;
         }
 
-        /* Primary button styling: Green with crisp white text */
-        div.stButton > button {
+        .stButton > button {
             width: 100%;
-            min-height: 46px;
-            background-color: #15803D;
-            color: #FFFFFF;
-            font-weight: 700;
-            font-size: 1rem;
-            border: 2px solid #15803D;
-            border-radius: 10px;
-            transition: all 0.15s ease;
+            background-color: var(--red-main) !important;
+            color: #FFFFFF !important;
+            font-weight: 700 !important;
+            border: 2px solid var(--green-main) !important;
+            border-radius: 10px !important;
+            padding: 0.65rem 1rem !important;
+            font-size: 1rem !important;
         }
 
-        div.stButton > button:hover {
-            background-color: #D92B2B;
-            border-color: #D92B2B;
-            color: #FFFFFF;
+        .stButton > button:hover {
+            background-color: var(--red-dark) !important;
+            border-color: var(--yellow-main) !important;
         }
 
-        /* File uploader border highlight */
         [data-testid="stFileUploaderDropzone"] {
-            background-color: #FFFDF7;
-            border: 2px dashed #15803D;
-            border-radius: 12px;
+            background-color: var(--yellow-soft) !important;
+            border: 2px dashed var(--green-main) !important;
+            border-radius: 12px !important;
         }
 
-        /* Ensure dataframes scroll cleanly on small mobile viewports */
         [data-testid="stDataFrame"] {
-            width: 100%;
-            overflow-x: auto;
-            border: 1px solid #E5E7EB;
+            border: 1.5px solid var(--green-main);
             border-radius: 10px;
+            overflow: hidden;
+            background: var(--bg-white);
         }
 
         .footer-credit {
-            margin-top: 32px;
-            padding: 14px 16px;
-            background-color: #FFFFFF;
-            border-top: 3px solid #D92B2B;
-            border-bottom: 3px solid #15803D;
+            margin-top: 2rem;
+            padding: 0.9rem 1rem;
             text-align: center;
+            background-color: var(--green-soft);
+            border-top: 3px solid var(--yellow-main);
+            border-bottom: 3px solid var(--red-main);
+            border-radius: 10px;
+            color: var(--green-main);
             font-weight: 700;
-            color: #1A1A1A;
             font-size: 0.95rem;
         }
 
-        .footer-credit span.accent-red {
-            color: #D92B2B;
-        }
-
-        .footer-credit span.accent-yellow {
-            background-color: #F5B700;
-            color: #1A1A1A;
-            padding: 2px 8px;
-            border-radius: 6px;
-        }
-
-        .footer-credit span.accent-green {
-            color: #15803D;
+        @media (max-width: 640px) {
+            .hero-box {
+                padding: 0.9rem 0.95rem;
+                border-radius: 10px;
+            }
+            .block-container {
+                padding-left: 0.85rem !important;
+                padding-right: 0.85rem !important;
+                padding-top: 1rem !important;
+            }
         }
     </style>
     """,
@@ -159,21 +140,17 @@ st.markdown(
 
 st.markdown(
     """
-    <div class="brand-banner">
-        <div class="brand-pills">
-            <span class="pill-red">PLS-SEM</span>
-            <span class="pill-yellow">MOBILE & PC</span>
-            <span class="pill-green">FREE WEB TOOL</span>
-        </div>
-        <h1 class="brand-title">PLS-SEM Web Calculator</h1>
-        <p class="brand-sub">Upload a numeric CSV, map survey items to constructs, and run path calculations on desktop or mobile.</p>
+    <div class="hero-box">
+        <div class="creator-pill">made by @ciceroyce</div>
+        <h1 class="hero-title">PLS-SEM Web Calculator</h1>
+        <p class="hero-sub">Upload a numeric CSV, assign items to constructs, and run PLS path modeling on mobile or desktop.</p>
     </div>
     """,
     unsafe_allow_html=True,
 )
 
-st.markdown('<div class="section-tag">1. Upload Survey Data (.CSV)</div>', unsafe_allow_html=True)
-uploaded_file = st.file_uploader("Choose a numeric CSV file", type=["csv"], label_visibility="collapsed")
+st.markdown('<div class="section-tag">1. Upload Dataset (.CSV)</div>', unsafe_allow_html=True)
+uploaded_file = st.file_uploader("Choose a CSV file with numeric survey columns", type=["csv"])
 
 if uploaded_file is not None:
     df = pd.read_csv(uploaded_file)
@@ -187,7 +164,7 @@ if uploaded_file is not None:
         st.warning("Need at least 2 numeric columns to build constructs.")
         st.stop()
 
-    st.markdown('<div class="section-tag">3. Assign Constructs & Run</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-tag">3. Map Constructs & Items</div>', unsafe_allow_html=True)
     col1, col2 = st.columns(2)
 
     with col1:
@@ -199,6 +176,7 @@ if uploaded_file is not None:
         available_for_y = [col for col in numeric_cols if col not in x_items]
         y_items = st.multiselect(f"Select items for {y_name}", available_for_y)
 
+    st.markdown('<div class="section-tag">4. Run Calculation</div>', unsafe_allow_html=True)
     if st.button("Run PLS Calculation"):
         if not x_items or not y_items:
             st.error("Please select at least one item for both constructs.")
@@ -229,9 +207,7 @@ if uploaded_file is not None:
 st.markdown(
     """
     <div class="footer-credit">
-        <span class="accent-green">made</span>
-        <span class="accent-red">by</span>
-        <span class="accent-yellow">@ciceroyce innit</span>
+        made by @ciceroyce &bull; Red / Yellow / Green / White Responsive UI
     </div>
     """,
     unsafe_allow_html=True,
