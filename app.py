@@ -5,132 +5,148 @@ from plspm.scheme import Scheme
 import streamlit as st
 
 st.set_page_config(
-    page_title="PLS-SEM Web Calculator | made by @ciceroyce",
+    page_title="PLS-SEM Calculator | @ciceroyce",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
 
+# Responsive styling: White + Red + Yellow + Green + Mobile & PC friendly
 st.markdown(
     """
     <style>
         :root {
-            --bg-white: #FFFFFF;
-            --surface-white: #FFFDF9;
-            --red-main: #D92B2B;
-            --red-dark: #B51D1D;
-            --yellow-main: #F6C90E;
-            --yellow-soft: #FFF8D6;
-            --green-main: #15803D;
-            --green-soft: #ECFDF3;
-            --ink-dark: #18181B;
-            --border-light: #E4E4E7;
+            --bg-white: #ffffff;
+            --surface-soft: #fffdf7;
+            --red-main: #d62828;
+            --red-dark: #a61c1c;
+            --yellow-main: #f7b500;
+            --yellow-soft: #fff6d1;
+            --green-main: #1b8a4b;
+            --green-soft: #e6f6ec;
+            --text-dark: #1f2933;
+            --border-light: #e5e7eb;
         }
 
         .stApp {
             background-color: var(--bg-white);
-            color: var(--ink-dark);
+            color: var(--text-dark);
+            padding-bottom: 72px;
         }
 
-        .hero-box {
-            background: var(--surface-white);
-            border: 2px solid var(--green-main);
-            border-left: 8px solid var(--red-main);
+        .hero-banner {
+            background: linear-gradient(120deg, var(--red-main) 0%, #e63946 58%, var(--yellow-main) 100%);
+            color: #ffffff;
+            padding: 20px 22px;
             border-radius: 14px;
-            padding: 1.1rem 1.25rem;
-            margin-bottom: 1rem;
-            box-shadow: 0 4px 14px rgba(24, 24, 27, 0.05);
+            border-bottom: 5px solid var(--green-main);
+            margin-bottom: 18px;
         }
 
-        .creator-pill {
-            display: inline-block;
-            background-color: var(--yellow-main);
-            color: var(--ink-dark);
-            font-weight: 700;
-            font-size: 0.85rem;
-            padding: 0.25rem 0.7rem;
-            border-radius: 999px;
-            border: 1.5px solid var(--green-main);
-            margin-bottom: 0.5rem;
-        }
-
-        .hero-title {
-            color: var(--green-main);
-            font-size: clamp(1.45rem, 4vw, 2.2rem);
+        .hero-banner h1 {
+            margin: 0 0 6px 0;
+            font-size: clamp(1.45rem, 3vw, 2.1rem);
             font-weight: 800;
-            line-height: 1.2;
-            margin: 0.2rem 0 0.4rem 0;
+            letter-spacing: -0.02em;
         }
 
-        .hero-sub {
-            color: var(--ink-dark);
-            font-size: clamp(0.92rem, 2.3vw, 1.05rem);
+        .hero-banner p {
             margin: 0;
+            font-size: clamp(0.9rem, 1.8vw, 1.02rem);
+            opacity: 0.96;
         }
 
-        .section-tag {
-            display: inline-block;
+        .palette-strip {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 18px;
+        }
+
+        .badge-red {
+            background-color: #fdeCEC;
+            color: var(--red-dark);
+            border: 1px solid var(--red-main);
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .badge-yellow {
+            background-color: var(--yellow-soft);
+            color: #7a5600;
+            border: 1px solid var(--yellow-main);
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .badge-green {
             background-color: var(--green-soft);
             color: var(--green-main);
-            border-left: 5px solid var(--green-main);
+            border: 1px solid var(--green-main);
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 0.8rem;
             font-weight: 700;
-            padding: 0.35rem 0.75rem;
-            border-radius: 6px;
-            margin-top: 0.8rem;
-            margin-bottom: 0.4rem;
-            font-size: 1.05rem;
         }
 
+        /* File uploader styling */
+        [data-testid="stFileUploaderDropzone"] {
+            background-color: var(--surface-soft);
+            border: 2px dashed var(--green-main);
+            border-radius: 12px;
+        }
+
+        /* Primary button styling */
         .stButton > button {
             width: 100%;
-            background-color: var(--red-main) !important;
-            color: #FFFFFF !important;
-            font-weight: 700 !important;
-            border: 2px solid var(--green-main) !important;
-            border-radius: 10px !important;
-            padding: 0.65rem 1rem !important;
-            font-size: 1rem !important;
+            background-color: var(--red-main);
+            color: #ffffff;
+            font-weight: 700;
+            border: 2px solid var(--red-dark);
+            border-radius: 10px;
+            padding: 0.65rem 1.1rem;
+            transition: all 0.15s ease-in-out;
         }
 
         .stButton > button:hover {
-            background-color: var(--red-dark) !important;
-            border-color: var(--yellow-main) !important;
+            background-color: var(--green-main);
+            border-color: var(--green-main);
+            color: #ffffff;
         }
 
-        [data-testid="stFileUploaderDropzone"] {
-            background-color: var(--yellow-soft) !important;
-            border: 2px dashed var(--green-main) !important;
-            border-radius: 12px !important;
-        }
-
-        [data-testid="stDataFrame"] {
-            border: 1.5px solid var(--green-main);
-            border-radius: 10px;
-            overflow: hidden;
-            background: var(--bg-white);
-        }
-
-        .footer-credit {
-            margin-top: 2rem;
-            padding: 0.9rem 1rem;
+        /* Centered bottom credit */
+        .bottom-credit {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
             text-align: center;
-            background-color: var(--green-soft);
+            background-color: rgba(255, 255, 255, 0.96);
             border-top: 3px solid var(--yellow-main);
-            border-bottom: 3px solid var(--red-main);
-            border-radius: 10px;
-            color: var(--green-main);
-            font-weight: 700;
-            font-size: 0.95rem;
+            color: var(--text-dark);
+            padding: 10px 14px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            z-index: 999;
+        }
+
+        .bottom-credit span.handle {
+            color: var(--red-main);
+            font-weight: 800;
         }
 
         @media (max-width: 640px) {
-            .hero-box {
-                padding: 0.9rem 0.95rem;
+            .hero-banner {
+                padding: 16px;
                 border-radius: 10px;
             }
-            .block-container {
-                padding-left: 0.85rem !important;
-                padding-right: 0.85rem !important;
-                padding-top: 1rem !important;
+            .bottom-credit {
+                font-size: 0.82rem;
+                padding: 8px 10px;
             }
         }
     </style>
@@ -140,22 +156,25 @@ st.markdown(
 
 st.markdown(
     """
-    <div class="hero-box">
-        <div class="creator-pill">made by @ciceroyce</div>
-        <h1 class="hero-title">PLS-SEM Web Calculator</h1>
-        <p class="hero-sub">Upload a numeric CSV, assign items to constructs, and run PLS path modeling on mobile or desktop.</p>
+    <div class="hero-banner">
+        <h1>PLS-SEM Web Calculator</h1>
+        <p>Upload a numeric CSV, assign survey items to constructs, and view PLS path outputs on mobile or desktop.</p>
+    </div>
+    <div class="palette-strip">
+        <span class="badge-red">Red: Action &amp; Paths</span>
+        <span class="badge-yellow">Yellow: Setup &amp; Notes</span>
+        <span class="badge-green">Green: Data &amp; Results</span>
     </div>
     """,
     unsafe_allow_html=True,
 )
 
-st.markdown('<div class="section-tag">1. Upload Dataset (.CSV)</div>', unsafe_allow_html=True)
-uploaded_file = st.file_uploader("Choose a CSV file with numeric survey columns", type=["csv"])
+uploaded_file = st.file_uploader("Upload survey data (.csv)", type=["csv"])
 
 if uploaded_file is not None:
     df = pd.read_csv(uploaded_file)
 
-    st.markdown('<div class="section-tag">2. Data Preview</div>', unsafe_allow_html=True)
+    st.subheader("Data Preview")
     st.dataframe(df.head(), use_container_width=True)
 
     numeric_cols = df.select_dtypes(include="number").columns.tolist()
@@ -164,9 +183,7 @@ if uploaded_file is not None:
         st.warning("Need at least 2 numeric columns to build constructs.")
         st.stop()
 
-    st.markdown('<div class="section-tag">3. Map Constructs & Items</div>', unsafe_allow_html=True)
     col1, col2 = st.columns(2)
-
     with col1:
         x_name = st.text_input("Independent Construct Name", value="Construct_X")
         x_items = st.multiselect(f"Select items for {x_name}", numeric_cols)
@@ -176,7 +193,6 @@ if uploaded_file is not None:
         available_for_y = [col for col in numeric_cols if col not in x_items]
         y_items = st.multiselect(f"Select items for {y_name}", available_for_y)
 
-    st.markdown('<div class="section-tag">4. Run Calculation</div>', unsafe_allow_html=True)
     if st.button("Run PLS Calculation"):
         if not x_items or not y_items:
             st.error("Please select at least one item for both constructs.")
@@ -193,21 +209,23 @@ if uploaded_file is not None:
 
                 model = Plspm(df, config, Scheme.PATH)
 
-                st.markdown('<div class="section-tag">Path Coefficients</div>', unsafe_allow_html=True)
+                st.success("Calculation completed.")
+
+                st.subheader("Path Coefficients")
                 st.dataframe(model.path_coefficients(), use_container_width=True)
 
-                st.markdown('<div class="section-tag">Construct Summary</div>', unsafe_allow_html=True)
+                st.subheader("Construct Summary")
                 st.dataframe(model.inner_summary(), use_container_width=True)
 
-                st.markdown('<div class="section-tag">Outer Loadings</div>', unsafe_allow_html=True)
+                st.subheader("Outer Loadings")
                 st.dataframe(model.outer_model(), use_container_width=True)
             except Exception as exc:
                 st.error(f"Calculation error: {exc}")
 
 st.markdown(
     """
-    <div class="footer-credit">
-        made by @ciceroyce &bull; Red / Yellow / Green / White Responsive UI
+    <div class="bottom-credit">
+        made by <span class="handle">@ciceroyce</span>
     </div>
     """,
     unsafe_allow_html=True,
